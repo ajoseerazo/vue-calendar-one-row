@@ -1,0 +1,113 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <div
+        v-if="startDate"
+        style="
+          display: flex;
+          justify-content: center;
+          flex-direction: column;
+          align-items: center;
+        "
+      >
+        <div style="text-align: center">{{ startDate.getMonth() }}</div>
+
+        <div style="display: flex">
+          <button v-on:click="getPrev">Prev</button>
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              flex-direction: column;
+            "
+          >
+            <ul style="list-style: none; display: flex">
+              <li style="margin-left: 10px; margin-right: 10px">L</li>
+
+              <li style="margin-left: 10px; margin-right: 10px">M</li>
+
+              <li style="margin-left: 10px; margin-right: 10px">X</li>
+
+              <li style="margin-left: 10px; margin-right: 10px">J</li>
+
+              <li style="margin-left: 10px; margin-right: 10px">V</li>
+
+              <li style="margin-left: 10px; margin-right: 10px">S</li>
+
+              <li style="margin-left: 10px; margin-right: 10px">D</li>
+            </ul>
+
+            <ul style="list-style: none; display: flex">
+              <li
+                v-for="item in week"
+                :key="item"
+                style="margin-left: 10px; margin-right: 10px"
+              >
+                {{ item }}
+              </li>
+            </ul>
+          </div>
+
+          <button v-on:click="getNext">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var app = new Vue({
+        el: "#app",
+        data: {
+          startDate: null,
+          week: [],
+        },
+        mounted() {
+          this.startDate = this.startOfWeek(new Date());
+          this.renderCalendar(new Date());
+        },
+        methods: {
+          renderCalendar(today) {
+            const thisDay = today.getDay();
+
+            const weekArr = [];
+
+            for (let i = 0; i < thisDay; i++) {
+              const showDate = new Date(today);
+              showDate.setDate(today.getDate() - (thisDay - (i + 1)));
+              const showDay = showDate.getDate();
+              weekArr.push(showDay);
+            }
+
+            for (let i = 0; i < 7 - thisDay; i++) {
+              const showDate = new Date(today);
+              showDate.setDate(today.getDate() + i + 1);
+              const showDay = showDate.getDate();
+              weekArr.push(showDay);
+            }
+
+            this.week = weekArr;
+          },
+
+          startOfWeek(date) {
+            const _d = new Date(date);
+            _d.setDate(date.getDate() - date.getDay());
+            return _d;
+          },
+
+          getNext() {
+            this.startDate.setDate(this.startDate.getDate() + 7);
+            this.renderCalendar(this.startDate);
+          },
+
+          getPrev() {
+            this.startDate.setDate(this.startDate.getDate() - 7);
+            this.renderCalendar(this.startDate);
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
